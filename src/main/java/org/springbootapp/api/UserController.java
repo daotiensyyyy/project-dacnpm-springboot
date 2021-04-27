@@ -27,9 +27,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -82,34 +84,11 @@ public class UserController {
 		User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
 				encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
 				signupRequest.getRole(), signupRequest.isActive());
-		String role = signupRequest.getRole();
 
-//		Set<Role> roles = new HashSet<>();
-//		if (role == null) {
-//			Role userRole = roleService.findRoleByName(ERole.ROLE_USER)
-//					.orElseThrow(() -> new RuntimeException("ERR: Role is not found!"));
-//			roles.add(userRole);
-//		} else {
+//		String role = signupRequest.getRole();
 //
-//			role.forEach(role -> {
-//				switch (role) {
-//				case "admin":
-//					Role adminRole = roleService.findRoleByName(ERole.ROLE_ADMIN)
-//							.orElseThrow(() -> new RuntimeException("ERR: Role is not found!"));
-//					roles.add(adminRole);
-//					break;
-//				default:
-//				case "user":
-//					Role userRole = roleService.findRoleByName(ERole.ROLE_USER)
-//							.orElseThrow(() -> new RuntimeException("ERR: Role is not found!"));
-//					roles.add(userRole);
-//					break;
-//				}
-//			});
-//		}
-
-		user.setRole(role);
-		userService.save(user);
+//		user.setRole(role);
+//		userService.save(user);
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
@@ -119,13 +98,33 @@ public class UserController {
 		mailMessage.setFrom("sydao1579@gmail.com");
 		mailMessage.setTo(user.getEmail());
 		mailMessage.setSubject("Complete Registration!");
-		mailMessage.setText(" Hi " + user.getUsername() +"!"
-						+ "\n Welcome to BHX! Please enter your OTP code to complete registration."
-						+ "\n Your OTP number is : " + otp);
+		mailMessage.setText(" Hi " + user.getUsername() + "!"
+				+ "\n Welcome to BHX! Please enter your OTP code to complete registration." + "\n Your OTP number is : "
+				+ otp);
 
 		emailService.sendEmail(mailMessage);
 
 		return new ResponseEntity<>(otp, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
+	public ResponseEntity<?> validateOTP(@RequestParam("otpnum") int otpNum, @RequestBody SignupRequest signupRequest) {
+		String msg = "Your account is now actived !";
+		try {
+			User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
+					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
+					signupRequest.getRole(), signupRequest.isActive());
+
+			userService.validateOTP(user, otpNum);
+			String role = user.getRole();
+
+			user.setRole(role);
+			userService.save(user);
+
+			return new ResponseEntity<>(msg, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
 	}
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)

@@ -13,4 +13,7 @@ public interface IUserService {
 	Boolean existsByUsername(String username);
 
 	Boolean existsByEmail(String email);
+	
+	boolean validateOTP(User user, int otpNum);
+	
 }
