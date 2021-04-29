@@ -17,7 +17,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends Abstract{
+public class User extends Abstract {
 
 	private String username;
 	private String email;
@@ -25,7 +25,17 @@ public class User extends Abstract{
 	private String address;
 	private String phone;
 	private String role;
+	private String resetToken;
 	private boolean active;
 	
-	
+	public User(String username, String email, String password, String address, String phone, String role,
+			boolean active) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.address = address;
+		this.phone = phone;
+		this.role = role;
+		this.active = active;
+	}	
 }

@@ -84,5 +84,16 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService{
 			return false;
 		}
 	}
+
+	@Override
+	public Optional<User> findUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+	
+	@Override
+	public Optional findUserByResetToken(String resetToken) {
+		return userRepository.findByResetToken(resetToken);
+	}
+
 	
 }
