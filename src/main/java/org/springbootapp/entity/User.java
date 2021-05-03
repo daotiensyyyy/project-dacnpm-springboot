@@ -37,5 +37,13 @@ public class User extends Abstract {
 		this.phone = phone;
 		this.role = role;
 		this.active = active;
+	}
+
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", email=" + email + ", password=" + password + ", address=" + address
+				+ ", phone=" + phone + ", role=" + role + ", resetToken=" + resetToken + ", active=" + active + "]";
 	}	
+	
+	
 }

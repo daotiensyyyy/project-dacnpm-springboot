@@ -31,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -61,20 +62,25 @@ public class UserController {
 
 	@Autowired
 	IEmailService emailService;
-	
+
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	// login
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		return ResponseEntity
-				.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getPassword()));
+
+		if (userService.checkActiveAccount(loginRequest.getUsername()).isPresent()) {
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			String jwt = jwtUtils.generateJwtToken(authentication);
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			return ResponseEntity.ok(
+					new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getPassword()));
+		}
+
+		return ResponseEntity.badRequest().body(new MessageResponse("ERR: Your account doesn't exist"));
 	}
 
 	// register
@@ -124,7 +130,7 @@ public class UserController {
 			user.setRole(role);
 			userService.save(user);
 
-			return new ResponseEntity<>(msg, HttpStatus.OK);
+			return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
@@ -132,7 +138,7 @@ public class UserController {
 
 	// Process form submission from forgotPassword page
 	@RequestMapping(value = "/forget", method = RequestMethod.POST)
-	public ResponseEntity processForgetPasswordForm(@RequestBody Map<String, String> requestPa,
+	public ResponseEntity<?> processForgetPasswordForm(@RequestBody Map<String, String> requestPa,
 			HttpServletRequest request) {
 
 		// Lookup user in database by e-mail
@@ -169,7 +175,7 @@ public class UserController {
 
 	// Process reset password form
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
-	public ResponseEntity setNewPassword(@RequestBody Map<String, String> requestParams, RedirectAttributes redir) {
+	public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> requestParams, RedirectAttributes redir) {
 
 		// Find the user associated with the reset token
 		Optional<User> user = userService.findUserByResetToken(requestParams.get("token"));
@@ -192,10 +198,10 @@ public class UserController {
 			// RedirectAttributes
 			redir.addFlashAttribute("successMessage", "You have successfully reset your password.  You may now login.");
 
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 
 		} else {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
 		}
 	}
@@ -211,4 +217,15 @@ public class UserController {
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 
+	// delete user
+	@RequestMapping(value = "/users/delete/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		try {
+			userService.delete(id);
+			return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 }

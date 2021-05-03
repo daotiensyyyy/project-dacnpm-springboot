@@ -16,14 +16,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService, IUserService{
-	
+public class UserDetailsServiceImpl implements UserDetailsService, IUserService {
+
 	@Autowired
 	IUserRepository userRepository;
-	
+
 	@Autowired
 	public IOTPService otpService;
-	
+
 	@Autowired
 	User user;
 
@@ -59,13 +59,13 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService{
 		} else
 			return false;
 	}
-	
+
 	@Override
 	public boolean validateOTP(User user, int otpNum) {
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
-		
+
 		if (otpNum >= 0) {
 
 			int serverOtp = otpService.getOTP(username);
@@ -89,11 +89,30 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService{
 	public Optional<User> findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-	
+
 	@Override
 	public Optional findUserByResetToken(String resetToken) {
 		return userRepository.findByResetToken(resetToken);
 	}
 
-	
+	@Override
+	public void delete(Long id) {
+		Optional<User> user_deleted = userRepository.findById(id);
+		if (user_deleted.isPresent()) {
+			User userInActive = user_deleted.get();
+			userInActive.setActive(false);
+			userRepository.save(userInActive);
+		}
+	}
+
+	@Override
+	public Optional<User> findUserById(Long id) {
+		return Optional.of(userRepository.findById(id).get());
+	}
+
+	@Override
+	public Optional<User> checkActiveAccount(String username) {
+		return userRepository.findActiveAccount(username);
+	}
+
 }

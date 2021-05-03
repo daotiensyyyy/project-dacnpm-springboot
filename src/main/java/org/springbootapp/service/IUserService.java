@@ -19,6 +19,12 @@ public interface IUserService {
 	
 	Optional<User> findUserByEmail(String email);
 	
+	Optional<User> findUserById(Long id);
+	
 	Optional<User> findUserByResetToken(String resetToken);
+	
+	void delete(Long id);
+	
+	Optional<User> checkActiveAccount(String username);
 	
 }

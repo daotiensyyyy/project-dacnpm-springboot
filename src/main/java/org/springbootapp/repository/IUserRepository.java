@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springbootapp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,4 +19,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByEmail(String email);
 	
 	Optional<User> findByResetToken(String resetToken);
+	
+	@Query("select u from User u where u.username=:username and u.active=true")
+	Optional<User> findActiveAccount(@Param("username")String username);
 }
