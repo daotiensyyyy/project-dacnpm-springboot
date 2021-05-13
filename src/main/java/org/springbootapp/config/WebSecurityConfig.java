@@ -1,5 +1,8 @@
 package org.springbootapp.config;
 
+import org.springbootapp.entity.Category;
+import org.springbootapp.entity.Image;
+import org.springbootapp.entity.Product;
 import org.springbootapp.entity.Role;
 import org.springbootapp.entity.User;
 import org.springbootapp.jwt.AuthEntryPointJwt;
@@ -58,7 +61,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public Role role() {
 		return new Role();
 	}
+	
 
+	@Bean
+	public Product product() {
+		return new Product();
+	}
+	
+
+	@Bean
+	public Category category() {
+		return new Category();
+	}
+	
+
+	@Bean
+	public Image image() {
+		return new Image();
+	}
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
