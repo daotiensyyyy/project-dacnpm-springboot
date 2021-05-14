@@ -172,6 +172,7 @@ public class ProductController {
 //	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/{id}/images", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> getProductImages(@PathVariable("id") Long id) {
 		try {

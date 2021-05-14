@@ -28,7 +28,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product")
 @NamedEntityGraph(name = "Product.graph", attributeNodes = { @NamedAttributeNode("category"),
 		@NamedAttributeNode("images") })
 @NamedEntityGraph(name = "Product.images", attributeNodes = { @NamedAttributeNode("images") })
