@@ -15,27 +15,19 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtResponse {
-	private String token;
+	private String accessToken;
 	private String type = "Bearer";
 	private String username;
 	private String email;
 	private List<String> roles;
 	
 	public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
-		this.token = accessToken;
+		this.accessToken = accessToken;
 		this.username = username;
 		this.email = email;
 		this.roles = roles;
 	}
 	
-	public String getAccessToken() {
-		return token;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.token = accessToken;
-	}
-
 	public String getTokenType() {
 		return type;
 	}
