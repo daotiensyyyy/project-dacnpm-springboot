@@ -126,4 +126,9 @@ public class ProductServiceImp implements IProductService {
 		return productRepository.findActiveProduct();
 	}
 
+	@Override
+	public Product getProductsById(Long id) throws Exception {
+		return productRepository.findById(id).orElseThrow(() ->new Exception("Product is not found"));
+	}
+
 }

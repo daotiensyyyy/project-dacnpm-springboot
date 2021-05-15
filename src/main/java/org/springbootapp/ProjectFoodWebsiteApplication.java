@@ -1,5 +1,6 @@
 package org.springbootapp;
 
+import org.springbootapp.repository.ICartRepository;
 import org.springbootapp.repository.IProductRepository;
 import org.springbootapp.repository.IUserRepository;
 import org.springframework.boot.SpringApplication;
@@ -11,9 +12,11 @@ public class ProjectFoodWebsiteApplication {
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(ProjectFoodWebsiteApplication.class, args);
-		IUserRepository ur = context.getBean(IUserRepository.class);
-		IProductRepository pr = context.getBean(IProductRepository.class);
-		System.out.println(ur.findActiveAccount("admin"));
+//		IUserRepository ur = context.getBean(IUserRepository.class);
+//		IProductRepository pr = context.getBean(IProductRepository.class);
+//		ICartRepository cr = context.getBean(ICartRepository.class);
+//		System.out.println(ur.findActiveAccount("admin"));
+//		System.out.println(cr.getCartByProductIdAnduserId((long)2,(long) 13));
 	}
 
 }

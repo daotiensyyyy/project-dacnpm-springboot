@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,6 +29,6 @@ public class Cart extends Abstract {
 	@Column(updatable = false, insertable = false)
 	String added_date;
 
-	@Transient
-	String productName;
+//	@Transient
+//	String productName;
 }

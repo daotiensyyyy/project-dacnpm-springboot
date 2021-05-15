@@ -20,6 +20,8 @@ public interface IProductService {
 	Optional<Product> adminGetByName(String name);
 
 	Optional<Product> adminGetByCode(String code);
+	
+	Product getProductsById(Long id) throws Exception;
 
 	Product save(Product product);
 
