@@ -3,7 +3,9 @@ package org.springbootapp.service.implement;
 import java.util.List;
 
 import org.springbootapp.entity.Cart;
+import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Product;
+import org.springbootapp.repository.IOrderRepository;
 import org.springbootapp.repository.ICartRepository;
 import org.springbootapp.service.ICartService;
 import org.springbootapp.service.IProductService;
@@ -19,13 +21,16 @@ public class CartServiceImp implements ICartService{
 	@Autowired
 	IProductService productService;
 	
+	@Autowired
+	IOrderRepository orderRepo;
+	
 //	@Autowired
 //	Cart cart;
 
 	@Override
-	public List<Cart> addCartbyUserIdAndProductId(long productId, long userId, int qty, double price) throws Exception {
+	public List<Cart> addCartbyUserIdAndProductId(Long productId, Long userId, int qty, double price) throws Exception {
 		try {
-			if(cartRepo.getCartByProductIdAnduserId(userId, productId).isPresent()){
+			if(cartRepo.getCartByProductIdAndUserId(userId, productId).isPresent()){
 				throw new Exception("Product is already exist.");
 			}
 			Cart cart = new Cart();
@@ -44,36 +49,58 @@ public class CartServiceImp implements ICartService{
 	}
 
 	@Override
-	public void updateQtyByCartId(long cartId, int qty, double price) throws Exception {
+	public void updateQtyByCartId(Long cartId, int qty, double price) throws Exception {
 		cartRepo.updateQtyByCartId(cartId,price,qty);
 		
 	}
 
 	@Override
-	public List<Cart> getCartByUserId(long userId) {
-		return cartRepo.getCartByuserId(userId);
+	public List<Cart> getCartByUserId(Long userId) {
+		return cartRepo.getCartByUserId(userId);
 	}
 
 	@Override
-	public List<Cart> removeCartByProductIdAndUserId(long userId, Long productId) {
+	public List<Cart> removeCartByProductIdAndUserId(Long userId, Long productId) {
 		cartRepo.deleteCartByProductIdAndUserId(userId, productId);
 		return this.getCartByUserId(userId);
 	}
 
 	@Override
-	public List<Cart> removeAllCartByUserId(long userId) {
+	public List<Cart> removeAllCartByUserId(Long userId) {
 		cartRepo.deleteAllCartByUserId(userId);
 		return null;
 	}
 
 	@Override
-	public Boolean checkTotalAmountAgainstCart(double totalAmount, long userId) {
+	public Boolean checkTotalAmountAgainstCart(double totalAmount, Long userId) {
 		double total_amount = cartRepo.getTotalAmountByUserId(userId);
 		if(total_amount == totalAmount) {
 			return true;
 		}
 		System.out.print("Error from request "+total_amount +" --db-- "+ totalAmount);
 		return false;
+	}
+
+	@Override
+	public List<Order> getAllOrderByUserId(Long userId) {
+		return orderRepo.getByUserId(userId);
+	}
+
+	@Override
+	public List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception {
+		try {
+			long user_id = tmp.get(0).getUser_id();
+			if(tmp.size() >0) {
+				orderRepo.saveAll(tmp);
+				this.removeAllCartByUserId(user_id);
+				return this.getAllOrderByUserId(user_id);
+			}	
+			else {
+				throw  new Exception("Should not be empty");
+			}
+		}catch(Exception e) {
+			throw new Exception("Error while checkout "+e.getMessage());
+		}
 	}
 
 }

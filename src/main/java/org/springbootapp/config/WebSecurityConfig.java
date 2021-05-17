@@ -1,6 +1,7 @@
 package org.springbootapp.config;
 
 import org.springbootapp.entity.Cart;
+import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Category;
 import org.springbootapp.entity.Image;
 import org.springbootapp.entity.Product;
@@ -84,6 +85,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Bean
 	public Cart cart() {
 		return new Cart();
+	}
+	
+	@Bean
+	public Order cartItem() {
+		return new Order();
 	}
 
 	@Override

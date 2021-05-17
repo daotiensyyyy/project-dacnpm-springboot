@@ -18,13 +18,13 @@ public interface ICartRepository extends JpaRepository<Cart, Long> {
 	double getTotalAmountByUserId(@Param("user_id") Long user_id);
 
 	@Query("Select c  FROM Cart c WHERE c.user_id=:user_id")
-	List<Cart> getCartByuserId(@Param("user_id") Long user_id);
+	List<Cart> getCartByUserId(@Param("user_id") Long user_id);
 
 	@Query("Select c FROM Cart c ")
 	Optional<Cart> getCartByuserIdtest();
 
 	@Query("Select c FROM Cart c WHERE c.product.id= :product_id and c.user_id=:user_id")
-	Optional<Cart> getCartByProductIdAnduserId(@Param("user_id") Long user_id, @Param("product_id") Long product_id);
+	Optional<Cart> getCartByProductIdAndUserId(@Param("user_id") Long user_id, @Param("product_id") Long product_id);
 
 	@Modifying
 	@Transactional

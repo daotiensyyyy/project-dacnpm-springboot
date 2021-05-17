@@ -36,6 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Override
 	public User save(User user) {
+		user.setRole("ROLE_USER");	///////////////////////////////////
 		return userRepository.save(user);
 	}
 
