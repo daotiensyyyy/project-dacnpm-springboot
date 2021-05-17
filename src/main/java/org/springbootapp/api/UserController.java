@@ -79,8 +79,8 @@ public class UserController {
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
-			return ResponseEntity.ok(
-					new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+			return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
+					userDetails.getEmail(), roles));
 		}
 
 		return ResponseEntity.badRequest().body(new MessageResponse("ERR: Your account doesn't exist"));
@@ -127,15 +127,15 @@ public class UserController {
 					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
 					signupRequest.getRole(), signupRequest.isActive());
 
-			userService.validateOTP(user, otpNum);
-			String role = user.getRole();
+			if (userService.validateOTP(user, otpNum)) {
+				String role = user.getRole();
 
-			user.setRole(role);
-			userService.save(user);
-
+				user.setRole(role);
+				userService.save(user);
+			}
 			return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
 		}
 	}
 
