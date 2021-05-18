@@ -127,15 +127,17 @@ public class UserController {
 					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
 					signupRequest.getRole(), signupRequest.isActive());
 
-			if (userService.validateOTP(user, otpNum)) {
+			if (userService.validateOTP(user, otpNum) == true) {
 				String role = user.getRole();
 
 				user.setRole(role);
 				userService.save(user);
+				return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
+			} else {
+				return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
 			}
-			return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
+			return ResponseEntity.badRequest().body(new MessageResponse("Bad Request !"));
 		}
 	}
 
