@@ -37,7 +37,7 @@ public class ProductController {
 
 	@Autowired
 	IFileService service;
-	
+
 	/* ADMIN */
 
 	@RequestMapping(value = "/admin/products", method = RequestMethod.POST)
@@ -48,8 +48,8 @@ public class ProductController {
 			String fileName = file.getOriginalFilename();
 			String path = request.getServletContext().getRealPath(UPLOAD_DIR) + File.separator + fileName;
 			service.save(file.getInputStream(), path);
-			String link = request.getRequestURL().toString().replace(request.getRequestURI(), "") + UPLOAD_DIR
-					+ File.separator + file.getOriginalFilename();
+			String link = request.getRequestURL().toString().replace(request.getRequestURI(), "") + UPLOAD_DIR + "/"
+					+ file.getOriginalFilename();
 			Image image = new Image(link, product.getName());
 			product.setImages(new HashSet<>());
 			product.addImage(image);
@@ -71,7 +71,7 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@RequestMapping(value = "/admin/products/{id}", method = RequestMethod.PUT)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<HttpStatus> updateById(@PathVariable("id") Long id, @RequestBody Product newProduct) {
@@ -92,7 +92,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/admin/products/code/{code}", method = RequestMethod.GET)
@@ -104,7 +104,7 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/admin/products/name/{name}", method = RequestMethod.GET)
@@ -116,9 +116,9 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	/* USER */
-	
+
 	@RequestMapping(value = "/products", method = RequestMethod.GET)
 	public ResponseEntity<List<Product>> getAllActiveProducts() {
 		List<Product> products = productService.getActiveProduct();
@@ -127,7 +127,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/id/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> getProductById(@PathVariable("id") Long id) {
@@ -138,7 +138,7 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/code/{code}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> getProductByCode(@PathVariable("code") String code) {
@@ -149,7 +149,7 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/name/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> getProductByName(@PathVariable("name") String name) {
@@ -171,7 +171,6 @@ public class ProductController {
 //			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //		}
 //	}
-
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/{id}/images", method = RequestMethod.GET)

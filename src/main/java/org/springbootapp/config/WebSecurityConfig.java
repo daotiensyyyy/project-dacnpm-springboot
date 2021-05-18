@@ -1,10 +1,11 @@
 package org.springbootapp.config;
 
 import org.springbootapp.entity.Cart;
-import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Category;
 import org.springbootapp.entity.Image;
+import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Product;
+import org.springbootapp.entity.Revenue;
 import org.springbootapp.entity.Role;
 import org.springbootapp.entity.User;
 import org.springbootapp.jwt.AuthEntryPointJwt;
@@ -88,8 +89,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	}
 	
 	@Bean
-	public Order cartItem() {
+	public Order order() {
 		return new Order();
+	}
+	
+	@Bean
+	public Revenue revenue() {
+		return new Revenue();
 	}
 
 	@Override

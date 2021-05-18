@@ -35,7 +35,7 @@ public class Order extends Abstract {
 	Product product;
 	int qty;
 	double price;
-	@Column(updatable = false, insertable = false)
+//	@Column(updatable = false, insertable = false)
 	String order_date;
 	
 	@Override

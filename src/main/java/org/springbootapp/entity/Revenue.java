@@ -1,5 +1,6 @@
 package org.springbootapp.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,6 @@ import lombok.Setter;
 public class Revenue extends Abstract{
 	
 	private String month;
+//	@Column(updatable = true, insertable = false)
 	private double total;
 }

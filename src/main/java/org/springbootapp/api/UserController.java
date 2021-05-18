@@ -121,7 +121,6 @@ public class UserController {
 	// validate otp
 	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
 	public ResponseEntity<?> validateOTP(@RequestParam("otpnum") int otpNum, @RequestBody SignupRequest signupRequest) {
-		String msg = "Your account is now actived !";
 		try {
 			User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
 					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
