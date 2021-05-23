@@ -35,15 +35,7 @@ public class Order extends Abstract {
 	Product product;
 	int qty;
 	double price;
-//	@Column(updatable = false, insertable = false)
+	@Column(updatable = false, insertable = false)
 	String order_date;
-	
-	@Override
-	public String toString() {
-		return "Order [order_id=" + order_id + ", payment_type=" + payment_type + ", delivery_address="
-				+ delivery_address + ", user_id=" + user_id + ", qty=" + qty + ", price="
-				+ price + ", order_date=" + order_date + "]";
-	}
 
-	
 }

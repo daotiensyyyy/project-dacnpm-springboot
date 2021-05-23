@@ -10,5 +10,5 @@ public interface IRevenueService {
 	
 	Revenue save(Revenue r, int month);
 	
-	void updateTotalByMonth(int month, double total) throws Exception;
+	double updateTotal(int month, double total) throws Exception;
 }

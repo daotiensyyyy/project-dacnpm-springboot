@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springbootapp.entity.User;
+import org.springframework.security.core.Authentication;
 
 public interface IUserService {
 	
@@ -26,5 +27,10 @@ public interface IUserService {
 	void delete(Long id);
 	
 	Optional<User> checkActiveAccount(String username);
+	
+	User getCurrentlyLoggedInUser(Authentication auth);
+	
+	User findUserByUsername(String username);
+	
 	
 }

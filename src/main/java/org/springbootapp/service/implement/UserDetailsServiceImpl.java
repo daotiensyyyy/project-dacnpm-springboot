@@ -116,4 +116,32 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 		return userRepository.findActiveAccount(username);
 	}
 
+	@Override
+	public User findUserByUsername(String username) {
+		return userRepository.findUserByUsername(username);
+	}
+	
+	@Override
+	public User getCurrentlyLoggedInUser(Authentication auth) {
+		if (auth == null)
+			return null;
+		User user = null;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			String username = ((UserDetails) principal).getUsername();
+			user = findUserByUsername(username);
+		} else {
+			String username = principal.toString();
+			user = findUserByUsername(username);
+		}
+
+//		Authentication authentication = authenticationManager.authenticate(
+//				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//		String username = userDetails.getUsername();
+//		user = findUserByUsername(username);
+		return user;
+	}
+
 }

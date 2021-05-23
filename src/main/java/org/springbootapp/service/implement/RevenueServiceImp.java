@@ -49,8 +49,10 @@ public class RevenueServiceImp implements IRevenueService {
 	}
 
 	@Override
-	public void updateTotalByMonth(int month, double total) throws Exception {
-		revenueRepo.updateTotalByMonth(month, total);
+	public double updateTotal(int month, double total) throws Exception {
+		revenueRepo.updateTotal(month, total);
+		total = getTotalByMonth(month);
+		return total;
 	}
 
 }

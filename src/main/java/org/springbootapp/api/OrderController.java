@@ -2,6 +2,7 @@ package org.springbootapp.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springbootapp.config.CartConfig;
@@ -37,26 +38,23 @@ public class OrderController {
 			}
 			long user_Id = Long.parseLong(request.get("userId"));
 			double total_amt = Double.parseDouble(request.get("total_price"));
-			if (cartService.checkTotalAmountAgainstCart(total_amt, user_Id)) {
-				List<Cart> cartItems = cartService.getCartByUserId(user_Id);
-				List<Order> tmp = new ArrayList<Order>();
-				for (Cart c : cartItems) {
-					String orderId = "" + c.getOrderId();
-					Order cart = new Order();
-					cart.setPayment_type(request.get("pay_type"));
-					cart.setPrice(total_amt);
-					cart.setUser_id(user_Id);
-					cart.setOrder_id(orderId);
-					cart.setProduct(c.getProduct());
-					cart.setQty(c.getQty());
-					cart.setDelivery_address(request.get("deliveryAddress"));
-					tmp.add(cart);
-				}
-				cartService.saveProductsForCheckout(tmp);
-				return ResponseEntity.ok().body(new MessageResponse("Success! Your order has been placed! ", ""));
-			} else {
-				throw new Exception("Total amount is mismatch");
+			
+			List<Cart> cartItems = cartService.getCartByUserId(user_Id);
+			List<Order> orders = new ArrayList<Order>();
+			for (Cart c : cartItems) {
+				String orderId = "" + c.getOrderId();
+				Order order = new Order();
+				order.setPayment_type(request.get("pay_type"));
+				order.setPrice(total_amt);
+				order.setUser_id(user_Id);
+				order.setOrder_id(orderId);
+				order.setProduct(c.getProduct());
+				order.setQty(c.getQty());
+				order.setDelivery_address(request.get("deliveryAddress"));
+				orders.add(order);
 			}
+			cartService.saveProductsForCheckout(orders);
+			return ResponseEntity.ok(orders);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), ""));

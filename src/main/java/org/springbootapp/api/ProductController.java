@@ -55,7 +55,7 @@ public class ProductController {
 			product.addImage(image);
 			productService.save(product);
 
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			return new ResponseEntity<>(product, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

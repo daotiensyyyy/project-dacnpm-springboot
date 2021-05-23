@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Revenue extends Abstract{
 	
-	private String month;
-//	@Column(updatable = true, insertable = false)
+	private int month;
+	@Column(updatable = true, insertable = false)
 	private double total;
 }

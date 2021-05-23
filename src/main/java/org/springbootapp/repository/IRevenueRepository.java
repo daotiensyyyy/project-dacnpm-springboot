@@ -15,6 +15,6 @@ public interface IRevenueRepository extends JpaRepository<Revenue, Long> {
 	@Modifying
 	@Transactional
 	@Query("update Revenue r set r.total=:total WHERE r.month=:month")
-	void updateTotalByMonth(@Param("month") int month, @Param("total") double total);
+	void updateTotal(@Param("month")int month, @Param("total") double total);
 
 }
