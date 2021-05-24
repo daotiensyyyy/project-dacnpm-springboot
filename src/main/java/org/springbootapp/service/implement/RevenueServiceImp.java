@@ -24,20 +24,20 @@ public class RevenueServiceImp implements IRevenueService {
 	@Override
 	public Double getTotal() {
 		double total = 0;
-		List<Double> tmp = orderRepo.getPriceGroupByOrderId();
-		for (int i = 0; i < tmp.size(); i++) {
-			total += tmp.get(i);
-		}
+//		List<Double> tmp = orderRepo.getPriceGroupByOrderId();
+//		for (int i = 0; i < tmp.size(); i++) {
+//			total += tmp.get(i);
+//		}
 		return total;
 	}
 
 	@Override
 	public Double getTotalByMonth(int month) {
 		double total = 0;
-		List<Double> tmp = orderRepo.getTotalRevenueByMonth(month);
-		for (int i = 0; i < tmp.size(); i++) {
-			total += tmp.get(i);
-		}
+//		List<Double> tmp = orderRepo.getTotalRevenueByMonth(month);
+//		for (int i = 0; i < tmp.size(); i++) {
+//			total += tmp.get(i);
+//		}
 		return total;
 	}
 

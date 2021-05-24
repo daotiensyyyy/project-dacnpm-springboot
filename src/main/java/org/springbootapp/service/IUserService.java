@@ -3,6 +3,7 @@ package org.springbootapp.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springbootapp.entity.Cart;
 import org.springbootapp.entity.User;
 import org.springframework.security.core.Authentication;
 
@@ -31,6 +32,10 @@ public interface IUserService {
 	User getCurrentlyLoggedInUser(Authentication auth);
 	
 	User findUserByUsername(String username);
+
+	void addItemToCart(Long customerID, Cart item);
+	
+	List<Cart> getCart(Long userID);
 	
 	
 }

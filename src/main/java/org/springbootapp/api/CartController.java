@@ -5,15 +5,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springbootapp.dto.MessageResponse;
 import org.springbootapp.entity.Cart;
 import org.springbootapp.entity.Product;
 import org.springbootapp.service.ICartService;
 import org.springbootapp.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,32 +110,32 @@ public class CartController {
 //		}
 //	}
 
-	@RequestMapping(value = "/cart/{uid}", method = RequestMethod.GET)
-	public ResponseEntity<?> getCart(@PathVariable("uid") Long uid) {
-		HashMap<Object, Object> map = new HashMap<>();
-		HashSet<Object> set2 = new HashSet<>();
-		HashMap<String, Object> map3 = new HashMap<>();
-		List<Cart> cart = cartService.listCartItems(uid);
-		int total = 0;
-		for (int i = 0; i < cart.size(); i++) {
-			System.out.println(cart.get(i).getTotal());
-			int arr = cart.get(i).getTotal();
-			total += arr;
-			Long cart_id = ((Cart) cart.get(i)).getId();
-			Long user_id = cart.get(i).getUser().getId();
-			int qty = cart.get(i).getQty();
-			List<Product> products = Arrays.asList(cart.get(i).getProduct());
-			map3.put("product", products);
-			map3.put("qty", qty);
-			set2.add(map3);
-			map.put("cart_id", cart_id);
-			map.put("user_id", user_id);
-			map.put("products", set2);
-			map.put("total", total);
-		}
-
-		return ResponseEntity.ok(map);
-	}
+//	@RequestMapping(value = "/cart/{uid}", method = RequestMethod.GET)
+//	public ResponseEntity<?> getCart(@PathVariable("uid") Long uid) {
+////		HashMap<Object, Object> map = new HashMap<>();
+////		HashSet<Object> set2 = new HashSet<>();
+////		HashMap<String, Object> map3 = new HashMap<>();
+//		List<Cart> cart = cartService.listCartItems(uid);
+////		int total = 0;
+////		for (int i = 0; i < cart.size(); i++) {
+////			System.out.println(cart.get(i).getTotal());
+////			int arr = cart.get(i).getTotal();
+////			total += arr;
+////			Long cart_id = ((Cart) cart.get(i)).getId();
+////			Long user_id = cart.get(i).getUser().getId();
+////			int qty = cart.get(i).getQty();
+////			List<Product> products = Arrays.asList(cart.get(i).getProduct());
+////			map3.put("product", products);
+////			map3.put("qty", qty);
+////			set2.add(map3);
+////			map.put("cart_id", cart_id);
+////			map.put("user_id", user_id);
+////			map.put("products", set2);
+////			map.put("total", total);
+////		}
+//
+//		return ResponseEntity.ok(cart);
+//	}
 
 	@RequestMapping(value = "/cart/add/{uid}/{pid}/{qty}", method = RequestMethod.POST)
 	public ResponseEntity<?> getCart(@PathVariable("uid") Long uid, @PathVariable("pid") Long pid,
@@ -141,6 +144,19 @@ public class CartController {
 		Cart cart = cartService.addProduct(uid, pid, qty);
 
 		return ResponseEntity.ok(cart);
+	}
+	
+	
+	@RequestMapping(value = "/user/{cid}/cart-items", method = RequestMethod.POST)
+	public ResponseEntity<?> addItemToCart(@PathVariable("cid") Long customerID, @RequestBody Cart item) {
+		userService.addItemToCart(customerID, item);
+		return new ResponseEntity<>(new MessageResponse("Added"), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/user/{cid}/cart-items", method = RequestMethod.GET)
+	public ResponseEntity<?>  getCart(@PathVariable("cid") Long customerID) {
+		List<Cart> obj = userService.getCart(customerID);
+		return ResponseEntity.ok(obj);
 	}
 
 //	@RequestMapping(value = "/cart/update/{uid}/{pid}/{qty}", method = RequestMethod.PUT)

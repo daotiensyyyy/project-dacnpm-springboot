@@ -41,7 +41,7 @@ public class ProductController {
 	/* ADMIN */
 
 	@RequestMapping(value = "/admin/products", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Product> createProduct(@ModelAttribute Product product,
 			@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {

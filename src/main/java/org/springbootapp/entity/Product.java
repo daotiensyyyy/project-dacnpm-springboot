@@ -11,7 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.springbootapp.serialize.ProductSerialize;
 
@@ -33,7 +32,9 @@ import lombok.Setter;
 @NamedEntityGraph(name = "Product.images", attributeNodes = { @NamedAttributeNode("images") })
 @JsonSerialize(using = ProductSerialize.class)
 public class Product extends Abstract {
-	
+
+	private static final long serialVersionUID = 1L;
+
 	private String code;
 	private String name;
 	private int price;
@@ -46,13 +47,16 @@ public class Product extends Abstract {
 	private Set<Image> images;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="category_id", nullable=false)
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 	private boolean active;
-	
+
+	@OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
+	private Set<Cart> items = new HashSet<>();
+
 	@JsonCreator
-	public Product(Long id, String name, int price, String description, double evaluate, 
-			Long category, Set<Image> images, boolean active ) {
+	public Product(Long id, String name, int price, String description, double evaluate, Long category,
+			Set<Image> images, boolean active) {
 		super(id);
 		this.name = name;
 		this.price = price;
@@ -65,7 +69,7 @@ public class Product extends Abstract {
 		}
 		this.active = active;
 	}
-	
+
 	public Product(Long id) {
 		super(id);
 	}

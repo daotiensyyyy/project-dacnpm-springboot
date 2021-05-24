@@ -80,7 +80,7 @@ public class UserController {
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
 			return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
-					userDetails.getEmail(), roles));
+					userDetails.getEmail(), userDetails.getAddress(), userDetails.getPhone(), roles));
 		}
 
 		return ResponseEntity.badRequest().body(new MessageResponse("ERR: Your account doesn't exist"));

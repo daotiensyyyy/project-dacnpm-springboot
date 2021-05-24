@@ -26,6 +26,8 @@ public class UserDetailsImpl implements UserDetails {
 	private Long id;
 	private String username;
 	private String email;
+	private String address;
+	private String phone;
 	@JsonIgnore
 	private String password;
 	private boolean active;
@@ -37,6 +39,8 @@ public class UserDetailsImpl implements UserDetails {
 		this.email = user.getEmail();
 		this.password = user.getPassword();
 		this.active = user.isActive();
+		this.address = user.getAddress();
+		this.phone = user.getPhone();
 		this.authorities = Arrays.stream(user.getRole().split(",")).map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}
@@ -62,6 +66,14 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+
+	public String getPhone() {
+		return phone;
 	}
 
 	@Override
@@ -103,5 +115,7 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) obj;
 		return Objects.equals(id, user.id);
 	}
+
+	
 
 }

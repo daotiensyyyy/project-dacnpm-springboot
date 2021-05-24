@@ -3,6 +3,7 @@ package org.springbootapp.repository;
 import java.util.Optional;
 
 import org.springbootapp.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	
 	@Query("select u from User u where u.username=:username and u.active=true")
 	Optional<User> findActiveAccount(@Param("username")String username);
+	
+	@EntityGraph("User.items")
+	@Query("SELECT c FROM User c WHERE c.id = ?1")
+	public Optional<User> findByIdWithItemsGraph(Long userID);
 }

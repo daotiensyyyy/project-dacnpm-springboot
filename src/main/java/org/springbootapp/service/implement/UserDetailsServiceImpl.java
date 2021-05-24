@@ -3,7 +3,10 @@ package org.springbootapp.service.implement;
 import java.util.List;
 import java.util.Optional;
 
+import org.springbootapp.entity.Cart;
+import org.springbootapp.entity.Product;
 import org.springbootapp.entity.User;
+import org.springbootapp.repository.IProductRepository;
 import org.springbootapp.repository.IUserRepository;
 import org.springbootapp.service.IOTPService;
 import org.springbootapp.service.IUserService;
@@ -14,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService, IUserService {
@@ -22,10 +26,16 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	IUserRepository userRepository;
 
 	@Autowired
+	IProductRepository productRepository;
+
+	@Autowired
 	public IOTPService otpService;
 
 	@Autowired
 	User user;
+	
+	@Autowired
+	Product product;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -36,7 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Override
 	public User save(User user) {
-		user.setRole("ROLE_USER");	///////////////////////////////////
+//		user.setRole("ROLE_USER");	///////////////////////////////////
 		return userRepository.save(user);
 	}
 
@@ -142,6 +152,20 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 //		String username = userDetails.getUsername();
 //		user = findUserByUsername(username);
 		return user;
+	}
+	
+	@Override
+	@Transactional
+	public void addItemToCart(Long userID, Cart item) {
+		Product mergeProduct = productRepository.getOne(item.getProduct().getId());
+		userRepository.findByIdWithItemsGraph(userID)
+				.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
+	}
+	
+	@Override
+	public List<Cart> getCart(Long userID) {
+		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);
+		return List.copyOf(findByIdWithItemsGraph.get().getItems());
 	}
 
 }
