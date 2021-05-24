@@ -156,12 +156,12 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Override
 	@Transactional
-	public List<Cart> addItemToCart(Long userID, Cart item) {
+	public Product addItemToCart(Long userID, Cart item) {
 		Product mergeProduct = productRepository.getOne(item.getProduct().getId());
 		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);
 //		.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
 		findByIdWithItemsGraph.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
-		return List.copyOf(findByIdWithItemsGraph.get().getItems());
+		return mergeProduct;
 	}
 
 	@Override
