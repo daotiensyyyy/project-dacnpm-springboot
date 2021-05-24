@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springbootapp.entity.Cart;
+import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Product;
 import org.springbootapp.entity.User;
 import org.springbootapp.repository.IProductRepository;
@@ -156,18 +157,39 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Override
 	@Transactional
-	public Product addItemToCart(Long userID, Cart item) {
+	public void addItemToCart(Long userID, Cart item) {
 		Product mergeProduct = productRepository.getOne(item.getProduct().getId());
 		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);
 //		.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
 		findByIdWithItemsGraph.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
-		return mergeProduct;
 	}
 
 	@Override
 	public List<Cart> getCart(Long userID) {
 		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);
 		return List.copyOf(findByIdWithItemsGraph.get().getItems());
+	}
+	
+	@Override
+	@Transactional
+	public void updateCartItem(Long userID, Long productID, String action) {
+		Product mergeProduct = productRepository.getOne(productID);
+		userRepository.findByIdWithItemsGraph(userID).ifPresent(user -> {
+			user.updateCart(mergeProduct, action);
+		});
+	}
+	
+	@Override
+	@Transactional
+	public void deleteItemIncart(Long userID, Long productID) {
+		Product mergeProduct = productRepository.getOne(productID);
+		userRepository.findByIdWithItemsGraph(userID).ifPresent(customer -> customer.removeCartItem(mergeProduct));
+	}
+	
+	@Override
+	public List<Order> getAllOrders(Long userID) {
+		Optional<User> findByIdWithOrdersGraph = userRepository.findByIdWithOrdersGraph(userID);
+		return List.copyOf(findByIdWithOrdersGraph.get().getOrders());
 	}
 
 }

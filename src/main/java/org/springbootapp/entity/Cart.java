@@ -55,7 +55,7 @@ public class Cart {
 		this.qty = qty;
 	}
 
-	public Long increaseQuantity(Long quantity) {
+	public Long increaseQuantity(Long qty) {
 		this.qty += qty;
 		return this.qty;
 	}

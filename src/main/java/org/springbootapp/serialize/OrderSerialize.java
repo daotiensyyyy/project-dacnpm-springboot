@@ -29,7 +29,7 @@ public class OrderSerialize extends StdSerializer<Order> {
 		gen.writeObjectField("consigneeName", value.getConsigneeName());
 		gen.writeObjectField("consigneePhone", value.getConsigneePhone());
 		gen.writeObjectField("address", value.getAddress());
-		gen.writeObjectField("userCode", value.getCustomer() != null ? value.getCustomer().getId() : null);
+		gen.writeObjectField("userCode", value.getUser() != null ? value.getUser().getId() : null);
 		gen.writeObjectField("items", value.getItems());
 		gen.writeEndObject();
 	}

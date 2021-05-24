@@ -13,6 +13,7 @@ import org.springbootapp.dto.JwtResponse;
 import org.springbootapp.dto.LoginRequest;
 import org.springbootapp.dto.MessageResponse;
 import org.springbootapp.dto.SignupRequest;
+import org.springbootapp.entity.Order;
 import org.springbootapp.entity.User;
 import org.springbootapp.jwt.JwtUtils;
 import org.springbootapp.service.IEmailService;
@@ -232,4 +233,11 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@RequestMapping(value = "/user/{cid}/orders", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllOrders(@PathVariable("cid") Long userID) {
+		List<Order> obj = userService.getAllOrders(userID);
+		return ResponseEntity.ok(obj);
+	}
+
 }

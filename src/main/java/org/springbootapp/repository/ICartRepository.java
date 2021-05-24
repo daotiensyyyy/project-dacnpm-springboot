@@ -20,7 +20,7 @@ public interface ICartRepository extends JpaRepository<Cart, Long> {
 
 	Cart findByUserAndProduct(User user, Product product);
 
-//	@Query("Select sum(c.price) FROM Cart c WHERE c.user_id=:user_id")
+//	@Query("Select sum(c.qty) FROM Cart c WHERE c.user.id=:user_id")
 //	double getTotalAmountByUserId(@Param("user_id") Long user_id);
 
 	@Query("Select c  FROM Cart c WHERE c.user.id=:user_id")

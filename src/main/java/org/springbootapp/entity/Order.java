@@ -38,12 +38,12 @@ import lombok.Setter;
 public class Order extends Abstract {
 	private static final long serialVersionUID = 560226111253281070L;
 	@Column(unique = true)
-	private int orderCode;
+	private String orderCode;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	private BigDecimal total;
 	@ManyToOne(fetch = FetchType.LAZY)
-	private User customer;
+	private User user;
 	private String consigneeName;
 	private String consigneePhone;
 	private String address;
@@ -53,13 +53,13 @@ public class Order extends Abstract {
 	private Set<OrderItem> items;
 
 	@JsonCreator
-	public Order(@JsonProperty("customerID") Long customerID, @JsonProperty("total") BigDecimal total,
+	public Order(@JsonProperty("customerID") Long userID, @JsonProperty("total") BigDecimal total,
 			@JsonProperty("consigneeName") String consigneeName, @JsonProperty("consigneePhone") String consigneePhone,
 			@JsonProperty("address") String address, @JsonProperty("payMethod") String payMethod,
 			@JsonProperty("items") Set<OrderItem> items) {
 		super();
-		this.orderCode = getOrderCode();
-		this.customer = customerID != null ? new User(customerID) : null;
+		this.orderCode = getCode();
+		this.user = userID != null ? new User(userID) : null;
 		this.createdDate = new Date(System.currentTimeMillis());
 		this.total = total;
 		this.consigneeName = consigneeName;
@@ -74,9 +74,9 @@ public class Order extends Abstract {
 		this.items.add(item);
 	}
 	
-	public int getOrderCode() {
+	public String getCode() {
 		Random r = new Random(System.currentTimeMillis());
-		return 10000 + r.nextInt(20000);
+		return String.valueOf(10000 + r.nextInt(20000));
 	}
 
 }

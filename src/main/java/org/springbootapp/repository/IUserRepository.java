@@ -29,4 +29,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	@EntityGraph("User.items")
 	@Query("SELECT c FROM User c WHERE c.id = ?1")
 	Optional<User> findByIdWithItemsGraph(Long userID);
+	
+	@EntityGraph("User.orders")
+	@Query("SELECT c FROM User c WHERE c.id = ?1")
+	public Optional<User> findByIdWithOrdersGraph(Long userID);
 }

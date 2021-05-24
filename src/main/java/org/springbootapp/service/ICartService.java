@@ -21,9 +21,9 @@ public interface ICartService {
 	List<Cart> removeAllCartByUserId(Long userId);
 //
 //	Boolean checkTotalAmountAgainstCart(double totalAmount, Long userId);
-//
+
 	List<Order> getAllOrderByUserId(Long userId);
-//
+
 	List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception;
 	
 	List<Cart>listCartItems(Long id);

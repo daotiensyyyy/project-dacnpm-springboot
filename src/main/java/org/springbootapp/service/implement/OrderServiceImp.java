@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springbootapp.entity.Order;
 import org.springbootapp.entity.OrderItem;
+import org.springbootapp.repository.ICartRepository;
 import org.springbootapp.repository.IOrderRepository;
 import org.springbootapp.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class OrderServiceImp implements IOrderService{
 	
 	@Autowired
 	IOrderRepository orderRepo;
+	
+	@Autowired
+	ICartRepository cartRepo;
 
 	@Override
 	@Transactional
@@ -23,7 +27,8 @@ public class OrderServiceImp implements IOrderService{
 		Set<OrderItem> temp = new HashSet<>(order.getItems());
 		order.setItems(new HashSet<>());
 		Order save = orderRepo.save(order);
-		temp.forEach(item -> orderRepo.addItem(item.getQuantity(), save.getId(), item.getProduct().getId()));		
+		temp.forEach(item -> orderRepo.addItem(item.getQuantity(), save.getId(), item.getProduct().getId()));	
+		cartRepo.deleteAllCartByUserId(save.getUser().getId());
 	}
 	
 	@Override

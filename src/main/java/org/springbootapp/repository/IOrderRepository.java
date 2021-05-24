@@ -29,4 +29,5 @@ public interface IOrderRepository extends JpaRepository<Order, Long>{
 	@Query("SELECT o FROM Order o WHERE id = :id")
 	@EntityGraph("Order.items")
 	public Optional<Order> findByIdWithItemsGraph(@Param("id") Long id);
+	
 }
