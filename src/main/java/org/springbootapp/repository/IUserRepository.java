@@ -28,5 +28,5 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	
 	@EntityGraph("User.items")
 	@Query("SELECT c FROM User c WHERE c.id = ?1")
-	public Optional<User> findByIdWithItemsGraph(Long userID);
+	Optional<User> findByIdWithItemsGraph(Long userID);
 }

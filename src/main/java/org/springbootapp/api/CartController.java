@@ -149,8 +149,8 @@ public class CartController {
 	
 	@RequestMapping(value = "/user/{cid}/cart-items", method = RequestMethod.POST)
 	public ResponseEntity<?> addItemToCart(@PathVariable("cid") Long customerID, @RequestBody Cart item) {
-		userService.addItemToCart(customerID, item);
-		return new ResponseEntity<>(new MessageResponse("Added"), HttpStatus.OK);
+		List<Cart>obj = userService.addItemToCart(customerID, item);
+		return new ResponseEntity<>(obj, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/user/{cid}/cart-items", method = RequestMethod.GET)

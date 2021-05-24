@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Autowired
 	User user;
-	
+
 	@Autowired
 	Product product;
 
@@ -130,7 +130,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	public User findUserByUsername(String username) {
 		return userRepository.findUserByUsername(username);
 	}
-	
+
 	@Override
 	public User getCurrentlyLoggedInUser(Authentication auth) {
 		if (auth == null)
@@ -153,15 +153,17 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 //		user = findUserByUsername(username);
 		return user;
 	}
-	
+
 	@Override
 	@Transactional
-	public void addItemToCart(Long userID, Cart item) {
+	public List<Cart> addItemToCart(Long userID, Cart item) {
 		Product mergeProduct = productRepository.getOne(item.getProduct().getId());
-		userRepository.findByIdWithItemsGraph(userID)
-				.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
+		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);
+//		.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
+		findByIdWithItemsGraph.ifPresent(user -> user.addCartItem(mergeProduct, item.getQty()));
+		return List.copyOf(findByIdWithItemsGraph.get().getItems());
 	}
-	
+
 	@Override
 	public List<Cart> getCart(Long userID) {
 		Optional<User> findByIdWithItemsGraph = userRepository.findByIdWithItemsGraph(userID);

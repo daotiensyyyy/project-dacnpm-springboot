@@ -33,7 +33,7 @@ public interface IUserService {
 	
 	User findUserByUsername(String username);
 
-	void addItemToCart(Long customerID, Cart item);
+	List<Cart> addItemToCart(Long customerID, Cart item);
 	
 	List<Cart> getCart(Long userID);
 	
