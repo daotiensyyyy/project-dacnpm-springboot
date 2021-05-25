@@ -1,5 +1,7 @@
 package org.springbootapp.repository;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springbootapp.entity.Order;
@@ -16,11 +18,11 @@ public interface IOrderRepository extends JpaRepository<Order, Long>{
 //	@Query("Select o  FROM Order o WHERE o.user_id=:user_id")
 //	List<Order> getByUserId(@Param("user_id")Long user_id);
 	
-//	@Query("Select o.price FROM Order o group by o.order_id")
-//	List<Double> getPriceGroupByOrderId();
+	@Query("Select o.total FROM Order o")
+	List<Double> getTotal();
 	
-//	@Query("Select o.price FROM Order o WHERE month(o.order_date)=:month group by o.order_id")
-//	List<Double> getTotalRevenueByMonth(@Param("month") int month);
+	@Query("Select sum(o.total) FROM Order o WHERE DAY(o.createdDate)=:date")
+	List<Double> getTotalRevenueByDate(@Param("date") int date);
 	
 	@Modifying
 	@Query(value = "insert into order_item (quantity, `order_id`, product_id) values (?1, ?2, ?3)", nativeQuery = true)

@@ -1,5 +1,6 @@
 package org.springbootapp.service.implement;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springbootapp.entity.Revenue;
@@ -24,35 +25,40 @@ public class RevenueServiceImp implements IRevenueService {
 	@Override
 	public Double getTotal() {
 		double total = 0;
-//		List<Double> tmp = orderRepo.getPriceGroupByOrderId();
-//		for (int i = 0; i < tmp.size(); i++) {
-//			total += tmp.get(i);
-//		}
+		List<Double> tmp = orderRepo.getTotal();
+		for (int i = 0; i < tmp.size(); i++) {
+			total += tmp.get(i);
+		}
 		return total;
 	}
 
 	@Override
-	public Double getTotalByMonth(int month) {
+	public Double getTotalByDate(int date) {
 		double total = 0;
-//		List<Double> tmp = orderRepo.getTotalRevenueByMonth(month);
-//		for (int i = 0; i < tmp.size(); i++) {
-//			total += tmp.get(i);
-//		}
+		List<Double> tmp = orderRepo.getTotalRevenueByDate(date);
+		for (int i = 0; i < tmp.size(); i++) {
+			total += tmp.get(i);
+		}
 		return total;
 	}
 
 	@Override
-	public Revenue save(Revenue r, int month) {
-		double total = getTotalByMonth(month);
+	public Revenue save(Revenue r, int date) {
+		double total = getTotalByDate(date);
 		revenueEntity.setTotal(total);
 		return revenueRepo.save(r);
 	}
 
 	@Override
-	public double updateTotal(int month, double total) throws Exception {
-		revenueRepo.updateTotal(month, total);
-		total = getTotalByMonth(month);
+	public double updateTotal(int date, double total) throws Exception {
+		revenueRepo.updateTotal(date, total);
+		total = getTotalByDate(date);
 		return total;
+	}
+
+	@Override
+	public List<Revenue> getAll() {
+		return revenueRepo.findAll();
 	}
 
 }

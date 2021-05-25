@@ -1,5 +1,7 @@
 package org.springbootapp.repository;
 
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.springbootapp.entity.Revenue;
@@ -14,7 +16,7 @@ public interface IRevenueRepository extends JpaRepository<Revenue, Long> {
 	
 	@Modifying
 	@Transactional
-	@Query("update Revenue r set r.total=:total WHERE r.month=:month")
-	void updateTotal(@Param("month")int month, @Param("total") double total);
+	@Query("update Revenue r set r.total=:total WHERE r.date=:date")
+	void updateTotal(@Param("date")int date, @Param("total") double total);
 
 }

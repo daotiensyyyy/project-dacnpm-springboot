@@ -1,14 +1,13 @@
 package org.springbootapp.api;
 
+import java.util.List;
+
 import org.springbootapp.dto.MessageResponse;
 import org.springbootapp.entity.Revenue;
 import org.springbootapp.service.IRevenueService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,16 +20,24 @@ public class RevenueController {
 	IRevenueService revenueService;
 
 	@RequestMapping(value = "/revenue", method = RequestMethod.PUT)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<?> createProduct( @RequestParam("month") int month) {
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> updateMonthRevenue(@RequestParam("date") int date) {
 		try {
-			double total = revenueService.getTotalByMonth(month);
+			double total = revenueService.getTotalByDate(date);
 //			Revenue r = new Revenue();
 //			r.setTotal(total);
-			total = revenueService.updateTotal(month, total);
+			total = revenueService.updateTotal(date, total);
 			return ResponseEntity.ok(total);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), ""));
 		}
+	}
+
+	@RequestMapping(value = "/revenue", method = RequestMethod.GET)
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<?> getRevenue() {
+		List<Revenue> obj = revenueService.getAll();
+		return ResponseEntity.ok(obj);
+
 	}
 }

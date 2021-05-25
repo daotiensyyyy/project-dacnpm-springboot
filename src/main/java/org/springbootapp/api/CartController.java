@@ -1,13 +1,9 @@
 package org.springbootapp.api;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import org.springbootapp.dto.MessageResponse;
 import org.springbootapp.entity.Cart;
-import org.springbootapp.entity.Product;
 import org.springbootapp.service.ICartService;
 import org.springbootapp.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
