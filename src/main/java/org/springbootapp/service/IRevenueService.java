@@ -15,4 +15,5 @@ public interface IRevenueService {
 	double updateTotal(int date, double total) throws Exception;
 	
 	List<Revenue> getAll();
+	
 }

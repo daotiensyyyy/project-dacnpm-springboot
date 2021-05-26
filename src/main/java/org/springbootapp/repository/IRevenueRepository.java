@@ -1,6 +1,6 @@
 package org.springbootapp.repository;
 
-import java.util.Date;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -18,5 +18,7 @@ public interface IRevenueRepository extends JpaRepository<Revenue, Long> {
 	@Transactional
 	@Query("update Revenue r set r.total=:total WHERE r.date=:date")
 	void updateTotal(@Param("date")int date, @Param("total") double total);
+	
+	Optional<Revenue> findByDate(int date);
 
 }

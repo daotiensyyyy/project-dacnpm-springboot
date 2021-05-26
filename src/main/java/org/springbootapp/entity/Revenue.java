@@ -21,8 +21,8 @@ import lombok.Setter;
 @JsonSerialize(using = RevenueSerialize.class)
 public class Revenue extends Abstract{
 	
-	@Column(updatable = false, insertable = false)
+	@Column(updatable = false, insertable = true)
 	private int date;
-	@Column(updatable = true, insertable = false)
+	@Column(updatable = true, insertable = true)
 	private double total;
 }

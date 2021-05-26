@@ -15,10 +15,10 @@ public class RevenueServiceImp implements IRevenueService {
 
 	@Autowired
 	IOrderRepository orderRepo;
-	
+
 	@Autowired
 	IRevenueRepository revenueRepo;
-	
+
 	@Autowired
 	Revenue revenueEntity;
 
@@ -51,9 +51,19 @@ public class RevenueServiceImp implements IRevenueService {
 
 	@Override
 	public double updateTotal(int date, double total) throws Exception {
-		revenueRepo.updateTotal(date, total);
-		total = getTotalByDate(date);
+		if (revenueRepo.findByDate(date).isPresent()) {
+			revenueRepo.updateTotal(date, total);
+			total = getTotalByDate(date);
+		} else {
+			Revenue r = new Revenue();
+			r.setDate(date);
+			r.setTotal(0);
+			revenueRepo.save(r);
+			revenueRepo.updateTotal(date, total);
+			total = getTotalByDate(date);
+		}
 		return total;
+
 	}
 
 	@Override
