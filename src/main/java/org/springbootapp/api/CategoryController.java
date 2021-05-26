@@ -26,7 +26,7 @@ public class CategoryController {
 
 	@RequestMapping(value = "/categories", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<Category> createProduct(@RequestBody Category category) {
+	public ResponseEntity<Category> create(@RequestBody Category category) {
 		try {
 			service.create(category);
 			return new ResponseEntity<>(category, HttpStatus.CREATED);
