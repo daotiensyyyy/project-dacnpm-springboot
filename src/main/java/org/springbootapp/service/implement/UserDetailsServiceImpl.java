@@ -61,7 +61,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 
 	@Override
 	public User save(User user) {
-//		user.setRole("ROLE_USER");	///////////////////////////////////
 		return userRepository.save(user);
 	}
 
@@ -147,29 +146,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	}
 
 	@Override
-	public User getCurrentlyLoggedInUser(Authentication auth) {
-		if (auth == null)
-			return null;
-		User user = null;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			String username = ((UserDetails) principal).getUsername();
-			user = findUserByUsername(username);
-		} else {
-			String username = principal.toString();
-			user = findUserByUsername(username);
-		}
-
-//		Authentication authentication = authenticationManager.authenticate(
-//				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//		SecurityContextHolder.getContext().setAuthentication(authentication);
-//		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//		String username = userDetails.getUsername();
-//		user = findUserByUsername(username);
-		return user;
-	}
-
-	@Override
 	@Transactional
 	public void addItemToCart(Long userID, Cart item) {
 		Product mergeProduct = productRepository.getOne(item.getProduct().getId());
@@ -187,17 +163,17 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	@Override
 	@Transactional
 	public void updateCartItem(Long userID, Long productID, String action) {
-		Product mergeProduct = productRepository.getOne(productID);
+		Product product = productRepository.getOne(productID);
 		userRepository.findByIdWithItemsGraph(userID).ifPresent(user -> {
-			user.updateCart(mergeProduct, action);
+			user.updateCart(product, action);
 		});
 	}
 	
 	@Override
 	@Transactional
 	public void deleteItemIncart(Long userID, Long productID) {
-		Product mergeProduct = productRepository.getOne(productID);
-		userRepository.findByIdWithItemsGraph(userID).ifPresent(customer -> customer.removeCartItem(mergeProduct));
+		Product product = productRepository.getOne(productID);
+		userRepository.findByIdWithItemsGraph(userID).ifPresent(customer -> customer.removeCartItem(product));
 	}
 	
 	@Override

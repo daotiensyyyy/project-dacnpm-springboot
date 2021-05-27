@@ -65,10 +65,10 @@ public class CartServiceImp implements ICartService {
 //		
 //	}
 //
-	@Override
-	public List<Cart> getCartByUserId(Long userId) {
-		return cartRepo.getCartByUserId(userId);
-	}
+//	@Override
+//	public List<Cart> getCartByUserId(Long userId) {
+//		return cartRepo.getCartByUserId(userId);
+//	}
 //	
 //	@Override
 //	public Optional<Cart> getCartByUserIdAndProductId(Long userId, Long product_id) {
@@ -103,48 +103,33 @@ public class CartServiceImp implements ICartService {
 		return null;
 	}
 
-	@Override
-	public List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception {
-//		try {
-//			long user_id = tmp.get(0).getUser_id();
-//			if(tmp.size() >0) {
-//				orderRepo.saveAll(tmp);
-//				this.removeAllCartByUserId(user_id);
-//				return this.getAllOrderByUserId(user_id);
-//			}	
-//			else {
-//				throw  new Exception("Should not be empty");
-//			}
-//		}catch(Exception e) {
-//			throw new Exception("Error while checkout "+e.getMessage());
-//		}
-		return null;
-	}
+//	@Override
+//	public List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception {
+////		try {
+////			long user_id = tmp.get(0).getUser_id();
+////			if(tmp.size() >0) {
+////				orderRepo.saveAll(tmp);
+////				this.removeAllCartByUserId(user_id);
+////				return this.getAllOrderByUserId(user_id);
+////			}	
+////			else {
+////				throw  new Exception("Should not be empty");
+////			}
+////		}catch(Exception e) {
+////			throw new Exception("Error while checkout "+e.getMessage());
+////		}
+//		return null;
+//	}
 
-	public List<Cart> listCartItems(Long id) {
-		return cartRepo.getCartByUserId(id);
-	}
+//	public List<Cart> listCartItems(Long id) {
+//		return cartRepo.getCartByUserId(id);
+//	}
 
-	public Cart addProduct(Long uid, Long productId, Integer qty) {
-		Cart cartItem = null;
-//		User user = userService.findUserById(uid).get();
-//		Integer addedQuantity = qty;
-		Product product = productRepo.findById(productId).get();
-//		Cart cartItem = cartRepo.findByUserAndProduct(user, product);
-//		if (cartItem != null) {
-//			addedQuantity = cartItem.getQty() + qty;
-//			cartItem.setQty(addedQuantity);
-//			cartItem.setTotal(addedQuantity * product.getPrice());
-//		} else {
-//			cartItem = new Cart();
-//			cartItem.setQty(qty);
-//			cartItem.setUser(user);
-//			cartItem.setProduct(product);
-//			cartItem.setTotal(product.getPrice() * qty);
-//		}
-//		cartRepo.save(cartItem);
-		return cartItem;
-	}
+//	public Cart addProduct(Long uid, Long productId, Integer qty) {
+//		Cart cartItem = null;
+//		Product product = productRepo.findById(productId).get();
+//		return cartItem;
+//	}
 
 	@Override
 	public void updateQtyByCartId(Integer qty, Long pid, Long uid) throws Exception {
@@ -152,5 +137,6 @@ public class CartServiceImp implements ICartService {
 		
 
 	}
+
 
 }

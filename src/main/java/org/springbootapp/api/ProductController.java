@@ -41,7 +41,7 @@ public class ProductController {
 	/* ADMIN */
 
 	@RequestMapping(value = "/admin/products", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<Product> createProduct(@ModelAttribute Product product,
 			@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 		try {
@@ -62,7 +62,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/admin/products/{id}", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") Long id) {
 		try {
 			productService.delete(id);
@@ -73,7 +73,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/admin/products/{id}", method = RequestMethod.PUT)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<HttpStatus> updateById(@PathVariable("id") Long id, @RequestBody Product newProduct) {
 		try {
 			productService.update(id, newProduct);
@@ -84,7 +84,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/admin/products", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public @ResponseBody ResponseEntity<List<Product>> getAllProducts() {
 		List<Product> products = productService.getAll();
 		if (products.isEmpty()) {
@@ -94,7 +94,7 @@ public class ProductController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	@RequestMapping(value = "/admin/products/code/{code}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> adminGetProductByCode(@PathVariable("code") String code) {
 		Optional<Product> product = productService.adminGetByCode(code);
@@ -106,7 +106,7 @@ public class ProductController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	@RequestMapping(value = "/admin/products/name/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Optional<Product>> adminGetProductByName(@PathVariable("name") String name) {
 		Optional<Product> product = productService.adminGetByName(name);
@@ -161,16 +161,6 @@ public class ProductController {
 		}
 	}
 
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
-//	@RequestMapping(value = "/products/{name}", method = RequestMethod.GET)
-//	public ResponseEntity<Optional<Product>> getProductByName(@PathVariable("name") String name) {
-//		Optional<Product> product = productService.getByName(name);
-//		if (product.isPresent()) {
-//			return new ResponseEntity(product.get(), HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
-//	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/products/{id}/images", method = RequestMethod.GET)

@@ -7,6 +7,7 @@ import org.springbootapp.entity.Revenue;
 import org.springbootapp.service.IRevenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,12 +21,10 @@ public class RevenueController {
 	IRevenueService revenueService;
 
 	@RequestMapping(value = "/revenue", method = RequestMethod.PUT)
-//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<?> updateMonthRevenue(@RequestParam("date") int date) {
 		try {
 			double total = revenueService.getTotalByDate(date);
-//			Revenue r = new Revenue();
-//			r.setTotal(total);
 			total = revenueService.updateTotal(date, total);
 			return ResponseEntity.ok(total);
 		} catch (Exception e) {
@@ -34,7 +33,7 @@ public class RevenueController {
 	}
 
 	@RequestMapping(value = "/revenue", method = RequestMethod.GET)
-//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<?> getRevenue() {
 		List<Revenue> obj = revenueService.getAll();
 		return ResponseEntity.ok(obj);

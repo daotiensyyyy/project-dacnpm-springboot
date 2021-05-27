@@ -25,7 +25,7 @@ public class CategoryController {
 	private ICategoryService service;
 
 	@RequestMapping(value = "/categories", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
 	public ResponseEntity<Category> create(@RequestBody Category category) {
 		try {
 			service.create(category);
@@ -44,16 +44,6 @@ public class CategoryController {
 		return new ResponseEntity<List<Category>>(category, HttpStatus.OK);
 	}
 
-//	@RequestMapping(value = "/categories/{id}", method = RequestMethod.DELETE)
-//	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	public ResponseEntity<HttpStatus> deleteById(@PathVariable("id") Long id) {
-//		try {
-//			service.delete(id);
-//			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
 
 	@RequestMapping(value = "/categories/{id}/products", method = RequestMethod.GET)
 	public ResponseEntity<List<Category>> getProductsByCategory(@PathVariable("id") Long id) {

@@ -12,7 +12,7 @@ public interface ICartService {
 //
 //	void updateQtyByCartId(Long cartId, int qty, double price) throws Exception;
 //
-	List<Cart> getCartByUserId(Long userId);
+//	List<Cart> getCartByUserId(Long userId);
 //	
 //	Optional<Cart> getCartByUserIdAndProductId(Long userId, Long product_id);
 //
@@ -24,11 +24,11 @@ public interface ICartService {
 
 	List<Order> getAllOrderByUserId(Long userId);
 
-	List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception;
+//	List<Order> saveProductsForCheckout(List<Order> tmp) throws Exception;
 	
-	List<Cart>listCartItems(Long id);
+//	List<Cart>listCartItems(Long id);
 	
-	Cart addProduct(Long uid, Long productId, Integer qty);
+//	Cart addProduct(Long uid, Long productId, Integer qty);
 	
 	void updateQtyByCartId(Integer qty, Long pid, Long uid) throws Exception;
 }

@@ -129,28 +129,6 @@ public class UserController {
 		return new ResponseEntity<>(new TokenResponseWrapper(token), HttpStatus.OK);
 	}
 
-//	// validate otp
-//	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
-//	public ResponseEntity<?> validateOTP(@RequestBody TokenValidationCodeRequestWrapper request) {
-//		try {
-//			User user = new User(request.getUsername(), signupRequest.getEmail(),
-//					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
-//					signupRequest.getRole(), signupRequest.isActive());
-//
-//			if (userService.validateOTP(user, request.getOtp()) == true) {
-//				String role = user.getRole();
-//
-//				user.setRole(role);
-//				userService.save(user);
-//				return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
-//			} else {
-//				return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
-//			}
-//		} catch (Exception e) {
-//			return ResponseEntity.badRequest().body(new MessageResponse("Bad Request !"));
-//		}
-//	}
-
 	// validate otp
 	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
 	public ResponseEntity<?> validateOTP(@RequestBody TokenValidationCodeRequestWrapper request) throws Exception {
@@ -163,27 +141,19 @@ public class UserController {
 		}
 	}
 
-	// Process form submission from forgotPassword page
 	@RequestMapping(value = "/forget", method = RequestMethod.POST)
 	public ResponseEntity<?> processForgetPasswordForm(@RequestBody Map<String, String> requestPa,
 			HttpServletRequest request) {
 
-		// Lookup user in database by e-mail
 		Optional<User> optional = userService.findUserByEmail(requestPa.get("email"));
 
 		if (!optional.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
-
-			// Generate random 36-character string token for reset password
 			User user = optional.get();
 			user.setResetToken(UUID.randomUUID().toString());
-
-			// Save token to database
 			userService.save(user);
-
 			String appUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
-
 			// Email message
 			SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
 			passwordResetEmail.setFrom("sydao1579@gmail.com");
@@ -191,45 +161,24 @@ public class UserController {
 			passwordResetEmail.setSubject("Password Reset");
 			passwordResetEmail.setText("To reset your password, click the link below:\n" + appUrl + "/reset?token="
 					+ user.getResetToken());
-
 			emailService.sendEmail(passwordResetEmail);
-
-			// Add success message to view
 			return new ResponseEntity<>(user.getResetToken(), HttpStatus.OK);
 		}
 
 	}
 
-	// Process reset password form
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> requestParams, RedirectAttributes redir) {
-
-		// Find the user associated with the reset token
 		Optional<User> user = userService.findUserByResetToken(requestParams.get("token"));
-
-		// This should always be non-null but we check just in case
 		if (user.isPresent()) {
-
 			User resetUser = user.get();
-
-			// Set new password
 			resetUser.setPassword(bCryptPasswordEncoder.encode(requestParams.get("password")));
-
-			// Set the reset token to null so it cannot be used again
 			resetUser.setResetToken(null);
-
-			// Save user
 			userService.save(resetUser);
-
-			// In order to set a model attribute on a redirect, we must use
-			// RedirectAttributes
 			redir.addFlashAttribute("successMessage", "You have successfully reset your password.  You may now login.");
-
 			return new ResponseEntity<>(HttpStatus.OK);
-
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
 		}
 	}
 

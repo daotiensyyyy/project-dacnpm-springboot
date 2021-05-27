@@ -30,9 +30,7 @@ public interface IUserService {
 	void delete(Long id);
 	
 	Optional<User> checkActiveAccount(String username);
-	
-	User getCurrentlyLoggedInUser(Authentication auth);
-	
+		
 	User findUserByUsername(String username);
 
 	void addItemToCart(Long customerID, Cart item);
