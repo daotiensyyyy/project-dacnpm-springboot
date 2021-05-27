@@ -44,6 +44,8 @@ public interface IUserService {
 	void deleteItemIncart(Long userID, Long productID);
 
 	List<Order> getAllOrders(Long userID);
+
+	boolean registryCutomerAccount(String token, String otp) throws Exception;
 	
 	
 }

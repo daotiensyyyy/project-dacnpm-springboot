@@ -15,16 +15,16 @@ public class JwtResponse {
 	private String email;
 	private String address;
 	private String phone;
-	private List<String> roles;
+	private String role;
 	
-	public JwtResponse(String accessToken, Long id, String username, String email, String address, String phone, List<String> roles) {
+	public JwtResponse(String accessToken, Long id, String username, String email, String address, String phone, String role) {
 		this.id = id;
 		this.accessToken = accessToken;
 		this.username = username;
 		this.email = email;
 		this.address = address;
 		this.phone = phone;
-		this.roles = roles;
+		this.role = role;
 	}
 	
 	public String getTokenType() {

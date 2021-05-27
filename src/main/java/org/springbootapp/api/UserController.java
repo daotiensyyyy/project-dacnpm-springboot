@@ -1,5 +1,6 @@
 package org.springbootapp.api;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +14,8 @@ import org.springbootapp.dto.JwtResponse;
 import org.springbootapp.dto.LoginRequest;
 import org.springbootapp.dto.MessageResponse;
 import org.springbootapp.dto.SignupRequest;
+import org.springbootapp.dto.TokenResponseWrapper;
+import org.springbootapp.dto.TokenValidationCodeRequestWrapper;
 import org.springbootapp.entity.Order;
 import org.springbootapp.entity.User;
 import org.springbootapp.jwt.JwtUtils;
@@ -21,6 +24,7 @@ import org.springbootapp.service.IOTPService;
 import org.springbootapp.service.IRoleService;
 import org.springbootapp.service.IUserService;
 import org.springbootapp.service.implement.UserDetailsImpl;
+import org.springbootapp.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +41,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 public class UserController {
@@ -81,7 +86,7 @@ public class UserController {
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
 			return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
-					userDetails.getEmail(), userDetails.getAddress(), userDetails.getPhone(), roles));
+					userDetails.getEmail(), userDetails.getAddress(), userDetails.getPhone(), roles.get(0)));
 		}
 
 		return ResponseEntity.badRequest().body(new MessageResponse("ERR: Your account doesn't exist"));
@@ -90,7 +95,7 @@ public class UserController {
 	// register
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest,
-			HttpServletRequest request) throws MessagingException {
+			HttpServletRequest request) throws MessagingException, JsonProcessingException {
 		if (userService.existsByUsername(signupRequest.getUsername())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("ERR: Username is already taken!"));
 		}
@@ -104,7 +109,12 @@ public class UserController {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
-		int otp = otpService.generateOTP(username);
+		String otp = String.valueOf(otpService.generateOTP(username));
+
+		Map<String, Object> information = new HashMap<>();
+		information.put("user", user);
+		information.put("otp", otp);
+		String token = TokenUtils.generateToken(information);
 
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setFrom("sydao1579@gmail.com");
@@ -116,28 +126,40 @@ public class UserController {
 
 		emailService.sendEmail(mailMessage);
 
-		return new ResponseEntity<>(otp, HttpStatus.OK);
+		return new ResponseEntity<>(new TokenResponseWrapper(token), HttpStatus.OK);
 	}
+
+//	// validate otp
+//	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
+//	public ResponseEntity<?> validateOTP(@RequestBody TokenValidationCodeRequestWrapper request) {
+//		try {
+//			User user = new User(request.getUsername(), signupRequest.getEmail(),
+//					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
+//					signupRequest.getRole(), signupRequest.isActive());
+//
+//			if (userService.validateOTP(user, request.getOtp()) == true) {
+//				String role = user.getRole();
+//
+//				user.setRole(role);
+//				userService.save(user);
+//				return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
+//			} else {
+//				return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
+//			}
+//		} catch (Exception e) {
+//			return ResponseEntity.badRequest().body(new MessageResponse("Bad Request !"));
+//		}
+//	}
 
 	// validate otp
 	@RequestMapping(value = "/register/validate", method = RequestMethod.POST)
-	public ResponseEntity<?> validateOTP(@RequestParam("otpnum") int otpNum, @RequestBody SignupRequest signupRequest) {
-		try {
-			User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
-					encoder.encode(signupRequest.getPassword()), signupRequest.getAddress(), signupRequest.getPhone(),
-					signupRequest.getRole(), signupRequest.isActive());
-
-			if (userService.validateOTP(user, otpNum) == true) {
-				String role = user.getRole();
-
-				user.setRole(role);
-				userService.save(user);
-				return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
-			} else {
-				return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
-			}
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Bad Request !"));
+	public ResponseEntity<?> validateOTP(@RequestBody TokenValidationCodeRequestWrapper request) throws Exception {
+		String otp = String.valueOf(request.getOtp());
+		boolean registryCutomerAccount = userService.registryCutomerAccount(request.getToken(), otp);
+		if (registryCutomerAccount) {
+			return ResponseEntity.ok().body(new MessageResponse("Your account is activated !"));
+		} else {
+			return ResponseEntity.badRequest().body(new MessageResponse("Wrong OTP !"));
 		}
 	}
 

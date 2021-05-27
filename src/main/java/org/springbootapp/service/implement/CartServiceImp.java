@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springbootapp.entity.Cart;
 import org.springbootapp.entity.Order;
+import org.springbootapp.entity.Product;
 import org.springbootapp.repository.ICartRepository;
 import org.springbootapp.repository.IOrderRepository;
 import org.springbootapp.repository.IProductRepository;
@@ -128,7 +129,7 @@ public class CartServiceImp implements ICartService {
 		Cart cartItem = null;
 //		User user = userService.findUserById(uid).get();
 //		Integer addedQuantity = qty;
-//		Product product = productRepo.findById(productId).get();
+		Product product = productRepo.findById(productId).get();
 //		Cart cartItem = cartRepo.findByUserAndProduct(user, product);
 //		if (cartItem != null) {
 //			addedQuantity = cartItem.getQty() + qty;

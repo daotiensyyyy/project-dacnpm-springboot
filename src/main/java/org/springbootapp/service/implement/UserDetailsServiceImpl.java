@@ -1,16 +1,22 @@
 package org.springbootapp.service.implement;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springbootapp.entity.Cart;
 import org.springbootapp.entity.Order;
 import org.springbootapp.entity.Product;
+import org.springbootapp.entity.Role;
 import org.springbootapp.entity.User;
 import org.springbootapp.repository.IProductRepository;
 import org.springbootapp.repository.IUserRepository;
 import org.springbootapp.service.IOTPService;
 import org.springbootapp.service.IUserService;
+import org.springbootapp.utils.TimeUtils;
+import org.springbootapp.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +25,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService, IUserService {
@@ -30,7 +40,11 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	IProductRepository productRepository;
 
 	@Autowired
-	public IOTPService otpService;
+	IOTPService otpService;
+	
+	@Autowired
+	ObjectMapper mapper;
+
 
 	@Autowired
 	User user;
@@ -190,6 +204,20 @@ public class UserDetailsServiceImpl implements UserDetailsService, IUserService 
 	public List<Order> getAllOrders(Long userID) {
 		Optional<User> findByIdWithOrdersGraph = userRepository.findByIdWithOrdersGraph(userID);
 		return List.copyOf(findByIdWithOrdersGraph.get().getOrders());
+	}
+
+	@Override
+	public boolean registryCutomerAccount(String token, String otp) throws Exception {
+		Map<String, Object> information = TokenUtils.getInfomationFromToken(token);
+		User user = mapper.convertValue(information.get("user"), User.class);
+		String otpCode = (String) information.get("otp");
+		Long expiredDate = (Long) information.get("expiredDate");
+		if (!TimeUtils.isExpired(new Date(expiredDate)) && otp.equals(otpCode)) {
+			userRepository.save(user);
+			return true;
+		} else {
+			throw new RuntimeException(!otp.equals(otpCode) ? "Invalid code!" : "Expired code!");
+		}
 	}
 
 }
